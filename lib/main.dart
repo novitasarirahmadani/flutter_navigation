@@ -1,58 +1,40 @@
 import 'package:flutter/material.dart';
 
-class Todo {
-  final String title;
-  final String description;
+void main() => runApp(const HeroApp());
 
-  const Todo(this.title, this.description);
+class HeroApp extends StatelessWidget {
+  const HeroApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Transition Demo',
+      home: MainScreen(),
+    );
+  }
 }
 
-void main() {
-  runApp(
-    MaterialApp(
-      title: 'Passing Data',
-      home: TodosScreen(
-        todos: List.generate(
-          20,
-          (i) => Todo(
-            'Todo $i',
-            'A description of what needs to be done for Todo $i',
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-class TodosScreen extends StatelessWidget {
-  const TodosScreen({Key? key, required this.todos}) : super(key: key);
-
-  final List<Todo> todos;
+class MainScreen extends StatelessWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todos'),
+        title: const Text('Main Screen'),
       ),
-      body: ListView.builder(
-        itemCount: todos.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(todos[index].title),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const DetailScreen(),
-                  settings: RouteSettings(
-                    arguments: todos[index],
-                  ),
-                ),
-              );
-            },
-          );
+      body: GestureDetector(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const DetailScreen();
+          }));
         },
+        child: Hero(
+          tag: 'imageHero',
+          child: Image.network(
+            'https://picsum.photos/250?image=9',
+          ),
+        ),
       ),
     );
   }
@@ -63,15 +45,19 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todo = ModalRoute.of(context)!.settings.arguments as Todo;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(todo.title),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(todo.description),
+      body: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Center(
+          child: Hero(
+            tag: 'imageHero',
+            child: Image.network(
+              'https://picsum.photos/250?image=9',
+            ),
+          ),
+        ),
       ),
     );
   }
